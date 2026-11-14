@@ -120,7 +120,9 @@
       "questions": [
         "Does Anmeldung cost anything?",
         "Is Anmeldung free?",
-        "What do I get after registering?"
+        "What do I get after registering?",
+        "Does it cost anything to register a flat?",
+        "Which paper do I receive after registering?"
       ],
       "textKind": "paraphrase",
       "text": "Anmeldung has no fee. You receive a registration confirmation (Meldebestätigung) listing your personal details and your addresses, marked as main or secondary residence. Online you download it as a digital certificate; on site you receive it immediately."
@@ -155,7 +157,8 @@
       "locator": "Wohnsitz (residence)",
       "questions": [
         "What counts as proof of residence for the permit?",
-        "Do I need Anmeldung before I apply for the permit?"
+        "Do I need Anmeldung before I apply for the permit?",
+        "What counts as proof of my address for the residence permit?"
       ],
       "textKind": "paraphrase",
       "text": "A second residence in Berlin does not qualify for the study residence permit; you need your main residence in Berlin. Proof is either a registration confirmation (Meldebestätigung), or a rental contract together with the landlord's move-in confirmation. So you do not have to finish Anmeldung before applying if you have the lease and the landlord's confirmation."
@@ -187,7 +190,8 @@
       "locator": "Antragstellung (timing)",
       "questions": [
         "How early can I apply for the residence permit?",
-        "When can I apply for the permit?"
+        "When can I apply for the permit?",
+        "Can I apply for the residence permit before my permit or visa expires?"
       ],
       "textKind": "paraphrase",
       "text": "Service Berlin: you can apply online at the earliest 4 months before your current residence title expires (frühestens 4 Monate vor Ablauf Ihres aktuellen Aufenthaltstitels).",
@@ -527,7 +531,8 @@
       "sourceId": "S14",
       "locator": "Application timing",
       "questions": [
-        "How early can I apply for the residence permit?"
+        "How early can I apply for the residence permit?",
+        "Can I apply for the residence permit before my permit or visa expires?"
       ],
       "textKind": "paraphrase",
       "text": "HfM Berlin: the online application can be made at the earliest 8 weeks before your current permit expires (frühestens 8 Wochen vor Ablauf), only through the Berlin service portal, and processing can take several months. The page gives no deadline counted from entry or arrival.",
