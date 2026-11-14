@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { berlinQA } from "@/lib/qa/load";
 import { isValidISO, todayLocalISO } from "@/lib/planner/dates";
 
-export const dynamic = "force-dynamic";
-
 const MAX_QUESTION_CHARS = 500;
 
 export async function POST(req: Request) {
