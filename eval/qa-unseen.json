@@ -1,0 +1,994 @@
+{
+  "note": "Previously unseen regression questions for Q&A reliability (batch 3). Written by the same person who fixed the failures, so it is a regression set and not a blind test. Cases with origin 'audit' come from the technical audit's failing examples. 'first' lists passages acceptable at rank one; 'mustNot' lists passages that must not appear (wrong-topic leaks). Existing gold files in src/data are untouched.",
+  "cases": [
+    {
+      "id": "a01",
+      "q": "How long after moving in do I have to register with the Bürgeramt?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "deadline"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P001",
+        "P008",
+        "P031"
+      ]
+    },
+    {
+      "id": "a02",
+      "q": "What information has to be on the Wohnungsgeberbestätigung?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P005"
+      ]
+    },
+    {
+      "id": "a03",
+      "q": "Do I have to pay anything to register my address?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "fee"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P011"
+      ]
+    },
+    {
+      "id": "a04",
+      "q": "What papers should I bring to register my address in person?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "documents"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P009"
+      ],
+      "first": [
+        "P009"
+      ]
+    },
+    {
+      "id": "a05",
+      "q": "Which documents are needed for Anmeldung?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "documents",
+        "ranking"
+      ],
+      "origin": "audit",
+      "passages": [
+        "P009"
+      ],
+      "first": [
+        "P009"
+      ],
+      "mustNot": [
+        "P014"
+      ],
+      "note": "A document list for Anmeldung is P009. P014 is about proof of residence for the permit, not an Anmeldung document list."
+    },
+    {
+      "id": "a06",
+      "q": "Which documents are needed for the study residence permit?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "documents",
+        "ranking"
+      ],
+      "origin": "audit",
+      "passages": [
+        "P015",
+        "P036",
+        "P012"
+      ],
+      "first": [
+        "P015"
+      ],
+      "note": "P015 is the permit document list and should rank before the housing-proof passage P014."
+    },
+    {
+      "id": "a07",
+      "q": "What is the minimum amount in the blocked account for 2026?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "amount",
+        "phrasing"
+      ],
+      "origin": "audit",
+      "passages": [
+        "P045",
+        "P050",
+        "P012",
+        "P016"
+      ],
+      "first": [
+        "P045",
+        "P050"
+      ]
+    },
+    {
+      "id": "a08",
+      "q": "How much money must I have in a Sperrkonto?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "amount",
+        "phrasing"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P045",
+        "P050",
+        "P012"
+      ]
+    },
+    {
+      "id": "a09",
+      "q": "What amount of money do I have to prove for my living costs?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "amount",
+        "phrasing"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P050",
+        "P045",
+        "P012",
+        "P016"
+      ]
+    },
+    {
+      "id": "a10",
+      "q": "How many euros per month does a student have to show?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "amount",
+        "phrasing"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P050",
+        "P045",
+        "P012"
+      ]
+    },
+    {
+      "id": "a11",
+      "q": "What is the least amount I need to put into a blocked account?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "amount",
+        "phrasing"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P045",
+        "P050"
+      ]
+    },
+    {
+      "id": "a12",
+      "q": "Is the landlord obliged to confirm my move-in?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P004",
+        "P006",
+        "P005"
+      ]
+    },
+    {
+      "id": "a13",
+      "q": "Is it possible to complete the registration over the internet?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "phrasing"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P010"
+      ]
+    },
+    {
+      "id": "a14",
+      "q": "Apart from a blocked account, how else can I show I can afford my studies?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "phrasing"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P016",
+        "P046"
+      ]
+    },
+    {
+      "id": "a15",
+      "q": "How many weeks until I can collect my eAT?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P020"
+      ]
+    },
+    {
+      "id": "a16",
+      "q": "What fees do I pay for the residence permit?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "fee"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P019"
+      ]
+    },
+    {
+      "id": "a17",
+      "q": "How far ahead of expiry can I submit the permit application?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "timing"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P017",
+        "P048",
+        "P049",
+        "P027",
+        "P035"
+      ]
+    },
+    {
+      "id": "a18",
+      "q": "Does the residence permit require German health insurance?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P013",
+        "P032",
+        "P037"
+      ]
+    },
+    {
+      "id": "a19",
+      "q": "Can I visit the immigration office without an appointment?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P026"
+      ]
+    },
+    {
+      "id": "a20",
+      "q": "Where is the immigration office?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "location"
+      ],
+      "origin": "audit",
+      "passages": [
+        "P020"
+      ],
+      "first": [
+        "P020"
+      ],
+      "note": "P020 holds the LEA street address."
+    },
+    {
+      "id": "a21",
+      "q": "What is the address of the Landesamt für Einwanderung?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "location"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P020"
+      ],
+      "first": [
+        "P020"
+      ]
+    },
+    {
+      "id": "a22",
+      "q": "Do I have to register my flat for the broadcasting contribution?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P041",
+        "P042",
+        "P043"
+      ]
+    },
+    {
+      "id": "a23",
+      "q": "How do I get my tax identification number?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P039",
+        "P040"
+      ]
+    },
+    {
+      "id": "a24",
+      "q": "Do I need to deregister when I move out?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P003"
+      ]
+    },
+    {
+      "id": "a25",
+      "q": "Do I need an appointment for Anmeldung?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "ranking"
+      ],
+      "origin": "audit",
+      "passages": [
+        "P029",
+        "P010"
+      ],
+      "first": [
+        "P029"
+      ],
+      "note": "Existing behaviour to preserve: P029 ranks first."
+    },
+    {
+      "id": "a26",
+      "q": "What is a Fiktionsbescheinigung?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P022",
+        "P023",
+        "P024"
+      ]
+    },
+    {
+      "id": "a27",
+      "q": "Does a rental contract replace the landlord's confirmation?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "phrasing"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P009"
+      ]
+    },
+    {
+      "id": "a28",
+      "q": "Which health insurance certificate does FU Berlin need for enrolment?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P037"
+      ]
+    },
+    {
+      "id": "a29",
+      "q": "Can the landlord refuse to confirm my move-in?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P006",
+        "P004"
+      ]
+    },
+    {
+      "id": "a30",
+      "q": "Is registering before moving in allowed?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P002"
+      ]
+    },
+    {
+      "id": "w01",
+      "q": "Where can I find a flat in Berlin?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "housing"
+      ],
+      "origin": "audit",
+      "mustNot": [
+        "P038",
+        "P032",
+        "P031"
+      ]
+    },
+    {
+      "id": "w02",
+      "q": "How do I find a room in a shared flat?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "housing"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "w03",
+      "q": "Which websites list apartments for rent?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "housing"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "w04",
+      "q": "How much is the rent for a flat in Berlin?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "housing"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "w05",
+      "q": "Can I work part-time on a student visa?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "work"
+      ],
+      "origin": "audit",
+      "mustNot": [
+        "P049",
+        "P045"
+      ]
+    },
+    {
+      "id": "w06",
+      "q": "What is the weather like in Berlin in winter?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "w07",
+      "q": "How do I get a mobile phone contract?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "w08",
+      "q": "How do I get a driving licence in Germany?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "w09",
+      "q": "Can I bring my family to Germany?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "w10",
+      "q": "How do I apply for a scholarship?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "w11",
+      "q": "Can I travel to Spain while my permit application is pending?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "w12",
+      "q": "How do I buy a public transport ticket?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "w13",
+      "q": "What is the capital of France?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "w14",
+      "q": "What is the minimum wage for students?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "work"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "l01",
+      "q": "Where is the Bürgeramt?",
+      "expect": "abstain",
+      "tags": [
+        "location"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "l02",
+      "q": "What are the opening hours of the immigration office?",
+      "expect": "abstain",
+      "tags": [
+        "location"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "l03",
+      "q": "How do I get to the Bürgeramt from Alexanderplatz?",
+      "expect": "abstain",
+      "tags": [
+        "location"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "l04",
+      "q": "Which Bürgeramt is closest to me?",
+      "expect": "abstain",
+      "tags": [
+        "location"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "l05",
+      "q": "What is the address of the Bürgeramt in Neukölln?",
+      "expect": "abstain",
+      "tags": [
+        "location"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "l06",
+      "q": "When is the registration office open on Saturdays?",
+      "expect": "abstain",
+      "tags": [
+        "location"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "l07",
+      "q": "How do I register in Munich?",
+      "expect": "abstain",
+      "tags": [
+        "location",
+        "city"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "d01",
+      "q": "Was kostet die Anmeldung?",
+      "expect": "answer",
+      "tags": [
+        "german",
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P011"
+      ]
+    },
+    {
+      "id": "d02",
+      "q": "Welche Unterlagen brauche ich für die Anmeldung?",
+      "expect": "answer",
+      "tags": [
+        "german",
+        "valid",
+        "documents"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P009"
+      ],
+      "first": [
+        "P009"
+      ]
+    },
+    {
+      "id": "d03",
+      "q": "Wie lange ist die Frist für die Anmeldung?",
+      "expect": "answer",
+      "tags": [
+        "german",
+        "valid",
+        "deadline"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P001",
+        "P008",
+        "P031"
+      ]
+    },
+    {
+      "id": "d04",
+      "q": "Brauche ich einen Termin für die Anmeldung?",
+      "expect": "answer",
+      "tags": [
+        "german",
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P010",
+        "P029"
+      ]
+    },
+    {
+      "id": "d05",
+      "q": "Wie viel Geld brauche ich auf dem Sperrkonto?",
+      "expect": "answer",
+      "tags": [
+        "german",
+        "valid",
+        "amount"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P045",
+        "P050",
+        "P012"
+      ]
+    },
+    {
+      "id": "d06",
+      "q": "Was ist die Steuer-ID?",
+      "expect": "answer",
+      "tags": [
+        "german",
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P039",
+        "P040"
+      ]
+    },
+    {
+      "id": "d07",
+      "q": "Wann muss ich mich abmelden?",
+      "expect": "answer",
+      "tags": [
+        "german",
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P003"
+      ]
+    },
+    {
+      "id": "d08",
+      "q": "Wo finde ich eine Wohnung in Berlin?",
+      "expect": "abstain",
+      "tags": [
+        "german",
+        "wrong-topic",
+        "housing"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "d09",
+      "q": "Wie ist das Wetter in Berlin?",
+      "expect": "abstain",
+      "tags": [
+        "german",
+        "wrong-topic"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "d10",
+      "q": "Darf ich als Student arbeiten?",
+      "expect": "abstain",
+      "tags": [
+        "german",
+        "wrong-topic",
+        "work"
+      ],
+      "origin": "fresh",
+      "note": "Must not be answered. Abstain or refuse both keep the person safe, but the expected outcome here is abstain."
+    },
+    {
+      "id": "d11",
+      "q": "Wo ist das Bürgeramt?",
+      "expect": "abstain",
+      "tags": [
+        "german",
+        "location"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "d12",
+      "q": "Wie ist die Adresse der Ausländerbehörde?",
+      "expect": "answer",
+      "tags": [
+        "german",
+        "valid",
+        "location"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P020"
+      ],
+      "first": [
+        "P020"
+      ]
+    },
+    {
+      "id": "t01",
+      "q": "how do i regester my adress in berlin",
+      "expect": "answer",
+      "tags": [
+        "typo",
+        "valid"
+      ],
+      "origin": "audit",
+      "passages": [
+        "P009",
+        "P010",
+        "P011",
+        "P001",
+        "P008",
+        "P031"
+      ]
+    },
+    {
+      "id": "t02",
+      "q": "What documnets do I need for the residense permit?",
+      "expect": "answer",
+      "tags": [
+        "typo",
+        "valid",
+        "documents"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P015",
+        "P036",
+        "P012"
+      ]
+    },
+    {
+      "id": "t03",
+      "q": "Is health insurence required for enrolment?",
+      "expect": "answer",
+      "tags": [
+        "typo",
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P032",
+        "P037",
+        "P013"
+      ]
+    },
+    {
+      "id": "t04",
+      "q": "how much is the blocked acount?",
+      "expect": "answer",
+      "tags": [
+        "typo",
+        "valid",
+        "amount"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P045",
+        "P050"
+      ]
+    },
+    {
+      "id": "t05",
+      "q": "Waht is the weather in Berlin",
+      "expect": "abstain",
+      "tags": [
+        "typo",
+        "wrong-topic"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "t06",
+      "q": "How do I get a drivng licence?",
+      "expect": "abstain",
+      "tags": [
+        "typo",
+        "wrong-topic"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "r01",
+      "q": "Will my application be approved?",
+      "expect": "refuse",
+      "tags": [
+        "refusal"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "r02",
+      "q": "Do I qualify for the study permit?",
+      "expect": "refuse",
+      "tags": [
+        "refusal"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "r03",
+      "q": "Am I allowed to stay after my visa ends?",
+      "expect": "refuse",
+      "tags": [
+        "refusal"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "r04",
+      "q": "Will I be deported if I register late?",
+      "expect": "refuse",
+      "tags": [
+        "refusal"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "r05",
+      "q": "What are my chances of getting the permit?",
+      "expect": "refuse",
+      "tags": [
+        "refusal"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "r06",
+      "q": "Is it legal to work without a permit?",
+      "expect": "refuse",
+      "tags": [
+        "refusal"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "r07",
+      "q": "Could I be fined for registering late?",
+      "expect": "refuse",
+      "tags": [
+        "refusal"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "r08",
+      "q": "Can you guarantee the immigration office approves my permit?",
+      "expect": "refuse",
+      "tags": [
+        "refusal"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "r09",
+      "q": "Werde ich abgeschoben, wenn ich mich zu spät anmelde?",
+      "expect": "refuse",
+      "tags": [
+        "refusal",
+        "german"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "r10",
+      "q": "Habe ich Anspruch auf eine Aufenthaltserlaubnis?",
+      "expect": "refuse",
+      "tags": [
+        "refusal",
+        "german"
+      ],
+      "origin": "fresh"
+    }
+  ]
+}

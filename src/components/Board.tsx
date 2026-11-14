@@ -1,5 +1,5 @@
 import type { Pack } from "@/lib/pack/schema";
-import type { Plan, Status } from "@/lib/planner/engine";
+import { waitingOn, type PlannedTask, type Plan, type Status } from "@/lib/planner/engine";
 import { prettyDate } from "@/lib/format";
 import { StatusBadge } from "./Badges";
 import { TaskDetail } from "./TaskDetail";
@@ -20,6 +20,14 @@ const GROUPS: { title: string; statuses: Status[] }[] = [
   { title: "Good to know", statuses: ["info_only"] },
 ];
 
+function rowDate(p: PlannedTask, titleOf: (id: string) => string): string | null {
+  if (p.status === "done") return null;
+  if (p.dueBy && p.dueBy.taskId !== p.task.id) return `needed for ${titleOf(p.dueBy.taskId)} by ${prettyDate(p.dueBy.date)}`;
+  if (!p.deadline) return null;
+  const passed = p.deadline.daysLeft < 0;
+  return `${p.deadline.hard ? "by " : "guidance "}${prettyDate(p.deadline.date)}${passed ? " (passed)" : ""}`;
+}
+
 export function Board({ plan, pack, titleOf, onDone, onUndo, doneByUser }: Props) {
   return (
     <div className="board">
@@ -36,14 +44,14 @@ export function Board({ plan, pack, titleOf, onDone, onUndo, doneByUser }: Props
                 <li key={p.task.id} className={`row row-${p.status}`}>
                   <details>
                     <summary>
-                      <span className="row-title">{p.task.title}</span>
-                      <span className="row-meta">
-                        {p.deadline && p.status !== "done" && (
-                          <span className="row-date">
-                            {p.deadline.hard ? "by " : "guidance "}
-                            {prettyDate(p.deadline.date)}
-                          </span>
+                      <span className="row-main">
+                        <span className="row-title">{p.task.title}</span>
+                        {p.status === "blocked" && waitingOn(p).length > 0 && (
+                          <span className="row-wait">Waiting on: {waitingOn(p).join("; ")}</span>
                         )}
+                      </span>
+                      <span className="row-meta">
+                        {rowDate(p, titleOf) && <span className="row-date">{rowDate(p, titleOf)}</span>}
                         <StatusBadge status={p.status} />
                       </span>
                     </summary>
@@ -51,6 +59,11 @@ export function Board({ plan, pack, titleOf, onDone, onUndo, doneByUser }: Props
                     {p.task.mode === "tracked" && p.status !== "done" && p.status !== "blocked" && (
                       <button type="button" className="btn btn-small" onClick={() => onDone(p.task.id)}>
                         Mark as done
+                      </button>
+                    )}
+                    {p.doneMarkIgnored && doneByUser.includes(p.task.id) && (
+                      <button type="button" className="btn btn-small btn-quiet" onClick={() => onUndo(p.task.id)}>
+                        Remove my &ldquo;done&rdquo; mark
                       </button>
                     )}
                     {p.status === "done" && doneByUser.includes(p.task.id) && (

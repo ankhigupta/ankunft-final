@@ -1,0 +1,392 @@
+{
+  "note": "Conversational questions for the free-form Ask pass (batch 5). Written BEFORE any change in this pass, after the failures of the user's six example questions were diagnosed, so wording differs from those examples but the mechanisms are the same: a regression set, not a blind test. 'state' is the person's entries: none (nothing entered), arrived (entry type and arrival date only), moved (arrival and move-in date). expect: answer (cited passages), guidance (built from the plan or the pack's own notes, never from retrieval), abstain (no answer; 'clarify' true when it must also offer options), refuse.",
+  "cases": [
+    {
+      "id": "c01",
+      "q": "Just landed, what should I do?",
+      "state": "moved",
+      "expect": "guidance",
+      "tags": [
+        "guidance",
+        "planner"
+      ]
+    },
+    {
+      "id": "c02",
+      "q": "Just got here, what now?",
+      "state": "moved",
+      "expect": "guidance",
+      "tags": [
+        "guidance",
+        "planner"
+      ]
+    },
+    {
+      "id": "c03",
+      "q": "Where do I even start?",
+      "state": "moved",
+      "expect": "guidance",
+      "tags": [
+        "guidance",
+        "planner"
+      ]
+    },
+    {
+      "id": "c04",
+      "q": "I'm new in Berlin, what are my next steps?",
+      "state": "moved",
+      "expect": "guidance",
+      "tags": [
+        "guidance",
+        "planner"
+      ]
+    },
+    {
+      "id": "c05",
+      "q": "I landed yesterday. What do I need to do first?",
+      "state": "moved",
+      "expect": "guidance",
+      "tags": [
+        "guidance",
+        "planner"
+      ]
+    },
+    {
+      "id": "c06",
+      "q": "What's my next step?",
+      "state": "moved",
+      "expect": "guidance",
+      "tags": [
+        "guidance",
+        "planner"
+      ]
+    },
+    {
+      "id": "c07",
+      "q": "Was soll ich zuerst tun?",
+      "state": "moved",
+      "expect": "guidance",
+      "tags": [
+        "guidance",
+        "german"
+      ]
+    },
+    {
+      "id": "c08",
+      "q": "I arrived in Berlin today. What's next?",
+      "state": "arrived",
+      "expect": "guidance",
+      "tags": [
+        "guidance",
+        "planner"
+      ]
+    },
+    {
+      "id": "c09",
+      "q": "Just landed, what to do?",
+      "state": "none",
+      "expect": "answer",
+      "tags": [
+        "guidance",
+        "no-state",
+        "corpus"
+      ],
+      "passages": [
+        "P030"
+      ]
+    },
+    {
+      "id": "c10",
+      "q": "What should I do first?",
+      "state": "none",
+      "expect": "answer",
+      "tags": [
+        "guidance",
+        "no-state",
+        "corpus"
+      ],
+      "passages": [
+        "P030"
+      ]
+    },
+    {
+      "id": "c11",
+      "q": "Just got here, what now?",
+      "state": "none",
+      "expect": "answer",
+      "tags": [
+        "guidance",
+        "no-state",
+        "corpus"
+      ],
+      "passages": [
+        "P030"
+      ]
+    },
+    {
+      "id": "c12",
+      "q": "I haven't registered my address yet. What do I need?",
+      "state": "none",
+      "expect": "answer",
+      "tags": [
+        "situational",
+        "corpus"
+      ],
+      "passages": [
+        "P009"
+      ]
+    },
+    {
+      "id": "c13",
+      "q": "I haven't registered yet, how long do I have?",
+      "state": "none",
+      "expect": "answer",
+      "tags": [
+        "situational",
+        "corpus"
+      ],
+      "passages": [
+        "P001",
+        "P008"
+      ]
+    },
+    {
+      "id": "c14",
+      "q": "I just moved into my flat. What do I need to register?",
+      "state": "none",
+      "expect": "answer",
+      "tags": [
+        "situational",
+        "corpus"
+      ],
+      "passages": [
+        "P009"
+      ]
+    },
+    {
+      "id": "c15",
+      "q": "I don't have health insurance yet. What do I need?",
+      "state": "none",
+      "expect": "answer",
+      "tags": [
+        "situational",
+        "corpus"
+      ],
+      "passages": [
+        "P013",
+        "P032",
+        "P037",
+        "P012"
+      ]
+    },
+    {
+      "id": "c16",
+      "q": "Can I do anything while waiting for my residence permit appointment?",
+      "state": "moved",
+      "expect": "guidance",
+      "tags": [
+        "meanwhile",
+        "planner"
+      ]
+    },
+    {
+      "id": "c17",
+      "q": "Is there anything I can prepare while I wait for the LEA appointment?",
+      "state": "moved",
+      "expect": "guidance",
+      "tags": [
+        "meanwhile",
+        "planner"
+      ]
+    },
+    {
+      "id": "c18",
+      "q": "What can I do while waiting for my Anmeldung appointment?",
+      "state": "moved",
+      "expect": "guidance",
+      "tags": [
+        "meanwhile",
+        "planner"
+      ]
+    },
+    {
+      "id": "c19",
+      "q": "Can I do anything while waiting for my residence permit appointment?",
+      "state": "none",
+      "expect": "guidance",
+      "tags": [
+        "meanwhile",
+        "no-state"
+      ]
+    },
+    {
+      "id": "c20",
+      "q": "visa",
+      "state": "none",
+      "expect": "abstain",
+      "tags": [
+        "ambiguous"
+      ],
+      "clarify": true
+    },
+    {
+      "id": "c21",
+      "q": "Anmeldung",
+      "state": "none",
+      "expect": "abstain",
+      "tags": [
+        "ambiguous"
+      ],
+      "clarify": true
+    },
+    {
+      "id": "c22",
+      "q": "insurance",
+      "state": "none",
+      "expect": "abstain",
+      "tags": [
+        "ambiguous"
+      ],
+      "clarify": true
+    },
+    {
+      "id": "c23",
+      "q": "What do I need?",
+      "state": "none",
+      "expect": "abstain",
+      "tags": [
+        "ambiguous"
+      ],
+      "clarify": true
+    },
+    {
+      "id": "c24",
+      "q": "help",
+      "state": "none",
+      "expect": "abstain",
+      "tags": [
+        "ambiguous"
+      ],
+      "clarify": true
+    },
+    {
+      "id": "c25",
+      "q": "Where is the university canteen?",
+      "state": "none",
+      "expect": "abstain",
+      "tags": [
+        "location"
+      ]
+    },
+    {
+      "id": "c26",
+      "q": "Where is the nearest pharmacy?",
+      "state": "none",
+      "expect": "abstain",
+      "tags": [
+        "location"
+      ]
+    },
+    {
+      "id": "c27",
+      "q": "Where is the library?",
+      "state": "none",
+      "expect": "abstain",
+      "tags": [
+        "location"
+      ]
+    },
+    {
+      "id": "c28",
+      "q": "Just landed, where can I find a cheap flat?",
+      "state": "moved",
+      "expect": "abstain",
+      "tags": [
+        "unsupported",
+        "housing"
+      ]
+    },
+    {
+      "id": "c29",
+      "q": "I just arrived, can I work part time?",
+      "state": "moved",
+      "expect": "abstain",
+      "tags": [
+        "unsupported",
+        "work"
+      ]
+    },
+    {
+      "id": "c30",
+      "q": "I just landed. Will my permit be approved?",
+      "state": "moved",
+      "expect": "refuse",
+      "tags": [
+        "refusal"
+      ]
+    },
+    {
+      "id": "c31",
+      "q": "Just landed in Munich, what should I do?",
+      "state": "moved",
+      "expect": "abstain",
+      "tags": [
+        "unsupported",
+        "city"
+      ]
+    },
+    {
+      "id": "c32",
+      "q": "Just landed, where do I get a SIM card?",
+      "state": "moved",
+      "expect": "abstain",
+      "tags": [
+        "unsupported"
+      ]
+    },
+    {
+      "id": "c33",
+      "q": "Where is the immigration office?",
+      "state": "none",
+      "expect": "answer",
+      "tags": [
+        "preserve",
+        "location"
+      ],
+      "passages": [
+        "P020"
+      ]
+    },
+    {
+      "id": "c34",
+      "q": "Where is the Bürgeramt?",
+      "state": "none",
+      "expect": "abstain",
+      "tags": [
+        "preserve",
+        "location"
+      ]
+    },
+    {
+      "id": "c35",
+      "q": "What should I do first about my residence permit?",
+      "state": "moved",
+      "expect": "answer",
+      "tags": [
+        "topic-present",
+        "corpus"
+      ],
+      "passages": [
+        "P018",
+        "P035",
+        "P034",
+        "P015",
+        "P012",
+        "P019",
+        "P020",
+        "P014",
+        "P036"
+      ]
+    }
+  ]
+}

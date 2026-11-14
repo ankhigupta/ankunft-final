@@ -1,0 +1,438 @@
+{
+  "note": "Batch 4 fresh questions. Written BEFORE the batch-4 fixes were implemented, but after the three failure mechanisms had been diagnosed from the exposed holdout cases (h08, h12, h19) and the two ranking questions named in the task. So they probe the same mechanisms with different wording: they are a generalisation check for those mechanisms, not a blind test of the whole system. Not used to choose any parameter.",
+  "cases": [
+    {
+      "id": "b01",
+      "q": "Where can I get a library card in Berlin?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "compound"
+      ],
+      "origin": "batch4",
+      "mustNot": [
+        "P033",
+        "P009",
+        "P010",
+        "P013",
+        "P018",
+        "P037"
+      ]
+    },
+    {
+      "id": "b02",
+      "q": "How do I apply for a library card?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "compound"
+      ],
+      "origin": "batch4",
+      "mustNot": [
+        "P033",
+        "P009",
+        "P010",
+        "P013",
+        "P018",
+        "P037"
+      ]
+    },
+    {
+      "id": "b03",
+      "q": "How much does a library membership cost?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "compound"
+      ],
+      "origin": "batch4",
+      "mustNot": [
+        "P033",
+        "P009",
+        "P010",
+        "P013",
+        "P018",
+        "P037"
+      ]
+    },
+    {
+      "id": "b04",
+      "q": "Can I borrow books with a library card from the city?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "compound"
+      ],
+      "origin": "batch4",
+      "mustNot": [
+        "P033",
+        "P009",
+        "P010",
+        "P013",
+        "P018",
+        "P037"
+      ]
+    },
+    {
+      "id": "b05",
+      "q": "How do I get a student discount card for public transport?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "compound"
+      ],
+      "origin": "batch4"
+    },
+    {
+      "id": "b06",
+      "q": "Where do I get a SIM card for my phone?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "compound"
+      ],
+      "origin": "batch4"
+    },
+    {
+      "id": "b07",
+      "q": "How do I replace a lost bank card?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "compound"
+      ],
+      "origin": "batch4"
+    },
+    {
+      "id": "b08",
+      "q": "How do I get a gym membership card?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "compound"
+      ],
+      "origin": "batch4"
+    },
+    {
+      "id": "b09",
+      "q": "Can I use the university library before I have enrolled?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "control"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P033"
+      ]
+    },
+    {
+      "id": "b10",
+      "q": "When can I start using the library at my university?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "control"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P033"
+      ]
+    },
+    {
+      "id": "b11",
+      "q": "Which papers does the registration office want from me for Anmeldung?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "documents"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P009"
+      ],
+      "first": [
+        "P009"
+      ]
+    },
+    {
+      "id": "b12",
+      "q": "What do I have to bring along to register at the citizens' office?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "documents"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P009"
+      ],
+      "first": [
+        "P009"
+      ]
+    },
+    {
+      "id": "b13",
+      "q": "Checklist of documents for the Anmeldung",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "documents"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P009"
+      ],
+      "first": [
+        "P009"
+      ]
+    },
+    {
+      "id": "b14",
+      "q": "List the documents required to register an address",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "documents"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P009"
+      ],
+      "first": [
+        "P009"
+      ]
+    },
+    {
+      "id": "b15",
+      "q": "What do I need to bring to my Anmeldung appointment?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "documents"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P009",
+        "P010",
+        "P029"
+      ],
+      "first": [
+        "P009",
+        "P010",
+        "P029"
+      ]
+    },
+    {
+      "id": "b16",
+      "q": "Can I get an LEA appointment without Anmeldung?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "control"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P029"
+      ],
+      "first": [
+        "P029"
+      ]
+    },
+    {
+      "id": "b17",
+      "q": "List of documents for the residence permit application",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "documents"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P015",
+        "P036"
+      ],
+      "first": [
+        "P015",
+        "P036"
+      ]
+    },
+    {
+      "id": "b18",
+      "q": "What documents does the immigration office need for my study permit?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "documents"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P015",
+        "P036"
+      ],
+      "first": [
+        "P015",
+        "P036"
+      ]
+    },
+    {
+      "id": "b19",
+      "q": "How large a deposit is required for a blocked account?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "amount"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P045",
+        "P050"
+      ],
+      "first": [
+        "P045",
+        "P050"
+      ]
+    },
+    {
+      "id": "b20",
+      "q": "What sum has to be paid into a Sperrkonto?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "amount"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P045",
+        "P050"
+      ],
+      "first": [
+        "P045",
+        "P050"
+      ]
+    },
+    {
+      "id": "b21",
+      "q": "How big does my blocked account balance need to be?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "amount"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P045",
+        "P050"
+      ],
+      "first": [
+        "P045",
+        "P050"
+      ]
+    },
+    {
+      "id": "b22",
+      "q": "Can I skip German insurance if I am covered at home?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "insurance"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P013",
+        "P032",
+        "P038",
+        "P037"
+      ]
+    },
+    {
+      "id": "b23",
+      "q": "Do I have to take out German cover for the residence permit?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "insurance"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P013",
+        "P012",
+        "P015"
+      ]
+    },
+    {
+      "id": "b24",
+      "q": "Can I opt out of German health insurance and use my policy from my home country?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "insurance"
+      ],
+      "origin": "batch4",
+      "passages": [
+        "P038",
+        "P013",
+        "P032",
+        "P037"
+      ]
+    },
+    {
+      "id": "b25",
+      "q": "How much is the rental deposit for a flat in Berlin?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "housing"
+      ],
+      "origin": "batch4"
+    },
+    {
+      "id": "b26",
+      "q": "What is the Kaution for a rental flat?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "housing"
+      ],
+      "origin": "batch4"
+    },
+    {
+      "id": "b27",
+      "q": "Where do I pay a deposit for renting a bike?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic"
+      ],
+      "origin": "batch4"
+    },
+    {
+      "id": "b28",
+      "q": "How big is a typical student flat in Berlin?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "housing"
+      ],
+      "origin": "batch4"
+    },
+    {
+      "id": "b29",
+      "q": "What is the best health insurance cover for students?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "recommendation"
+      ],
+      "origin": "batch4"
+    },
+    {
+      "id": "b30",
+      "q": "Will the immigration office accept my home insurance?",
+      "expect": "refuse",
+      "tags": [
+        "refusal"
+      ],
+      "origin": "batch4"
+    }
+  ]
+}

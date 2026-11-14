@@ -1,0 +1,411 @@
+{
+  "note": "Holdout for Q&A reliability (batch 3). Written before any retrieval change in this batch. The first measurement was taken blind (answers 15/19, abstention 9/12, refusal 2/3 after the h19 swap). After that, five items whose failures showed general gaps were fixed (see their notes), so those five are no longer blind. Same author as the fixes. Existing gold files in src/data are untouched. Batch 4: h08, h12 and h19 were the three questions named in the batch-4 task (a deposit paraphrase, a 'skip German cover' paraphrase and the library-card false positive), so they were investigated directly and are exposed. They are fixed by general changes (vocabulary, a section-title bonus for document questions, and an incidental-single-match abstention) and were not used to choose any parameter value.",
+  "cases": [
+    {
+      "id": "h01",
+      "q": "When does the registration deadline start counting?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "deadline"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P008",
+        "P001",
+        "P002"
+      ]
+    },
+    {
+      "id": "h02",
+      "q": "Does the registration office charge for the Meldebestätigung?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "fee"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P011"
+      ]
+    },
+    {
+      "id": "h03",
+      "q": "Whose name has to be on the move-in confirmation?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P005",
+        "P004"
+      ]
+    },
+    {
+      "id": "h04",
+      "q": "Who is allowed to issue the landlord's confirmation?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P007",
+        "P004"
+      ]
+    },
+    {
+      "id": "h05",
+      "q": "Which ID do I need for online registration?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P010"
+      ]
+    },
+    {
+      "id": "h06",
+      "q": "What happens if the tax ID letter never arrives?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P040"
+      ],
+      "note": "No longer blind: this item's first failure led to a general fix (never/happens as framing words)."
+    },
+    {
+      "id": "h07",
+      "q": "How much does an electronic residence permit cost?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "fee"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P019"
+      ]
+    },
+    {
+      "id": "h08",
+      "q": "How big a deposit does the blocked account need?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "amount"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P045",
+        "P050"
+      ],
+      "note": "Exposed in batch 4: named in the task, investigated directly. Fixed by general vocabulary changes (deposit/size read as 'amount'; skip/avoid/opt read as 'exempt'; 'home country' as one word)."
+    },
+    {
+      "id": "h09",
+      "q": "Is a statement of commitment accepted instead of a blocked account?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P046"
+      ]
+    },
+    {
+      "id": "h10",
+      "q": "Is the old online appointment tool for the immigration office still running?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P025"
+      ]
+    },
+    {
+      "id": "h11",
+      "q": "What is the BAföG-based amount I have to show per year?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "amount"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P050",
+        "P045",
+        "P012"
+      ]
+    },
+    {
+      "id": "h12",
+      "q": "Can I keep my insurance from home and skip German cover?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P013",
+        "P032",
+        "P038",
+        "P037"
+      ],
+      "note": "Exposed in batch 4: named in the task, investigated directly. Fixed by general vocabulary changes (deposit/size read as 'amount'; skip/avoid/opt read as 'exempt'; 'home country' as one word)."
+    },
+    {
+      "id": "h13",
+      "q": "Do I need the Fiktionsbescheinigung for a national visa?",
+      "expect": "answer",
+      "tags": [
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P024",
+        "P022",
+        "P023"
+      ]
+    },
+    {
+      "id": "h14",
+      "q": "What does TU Berlin list as documents for the permit?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "documents"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P036"
+      ]
+    },
+    {
+      "id": "h15",
+      "q": "Where does the immigration office sit?",
+      "expect": "answer",
+      "tags": [
+        "valid",
+        "location"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P020"
+      ],
+      "note": "No longer blind: this item's first failure led to a general fix ('where does ... sit/located' phrasing)."
+    },
+    {
+      "id": "h16",
+      "q": "How can I find a flatmate?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "housing"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "h17",
+      "q": "Where do I look for student accommodation?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "housing"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "h18",
+      "q": "Can I take a job at the university?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic",
+        "work"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "h19",
+      "q": "How do I get a library card in Berlin?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic"
+      ],
+      "origin": "fresh",
+      "note": "Replaced before any result was seen: the first wording repeated an existing gold question. Exposed in batch 3 and again in batch 4, when it was investigated directly. Fixed in batch 4: the best passage matched one word ('library'), only in its body and not in what it is about, so the answer is now an abstention."
+    },
+    {
+      "id": "h20",
+      "q": "What is the best bank for students?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic"
+      ],
+      "origin": "fresh",
+      "note": "No longer blind: this item's first failure led to a general fix (recommendation requests)."
+    },
+    {
+      "id": "h21",
+      "q": "How can I get a student discount on the train?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "h22",
+      "q": "How do I apply for BAföG?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "h23",
+      "q": "What time does the Bürgeramt open?",
+      "expect": "abstain",
+      "tags": [
+        "location"
+      ],
+      "origin": "fresh",
+      "note": "No longer blind: this item's first failure led to a general fix ('what time ... open' phrasing)."
+    },
+    {
+      "id": "h24",
+      "q": "Where is the nearest immigration office branch?",
+      "expect": "abstain",
+      "tags": [
+        "location"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "h25",
+      "q": "How do I get from the airport to the university?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "h26",
+      "q": "Wie hoch sind die Gebühren für die Aufenthaltserlaubnis?",
+      "expect": "answer",
+      "tags": [
+        "german",
+        "valid",
+        "fee"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P019"
+      ]
+    },
+    {
+      "id": "h27",
+      "q": "Brauche ich eine Krankenversicherung für die Aufenthaltserlaubnis?",
+      "expect": "answer",
+      "tags": [
+        "german",
+        "valid"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P013",
+        "P032",
+        "P037"
+      ]
+    },
+    {
+      "id": "h28",
+      "q": "Wo kann ich eine Wohnung mieten?",
+      "expect": "abstain",
+      "tags": [
+        "german",
+        "wrong-topic",
+        "housing"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "h29",
+      "q": "How much does the aufenthaltserlaubnis cost?",
+      "expect": "answer",
+      "tags": [
+        "german",
+        "valid",
+        "fee"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P019"
+      ]
+    },
+    {
+      "id": "h30",
+      "q": "whats the deadlien for registring my adress",
+      "expect": "answer",
+      "tags": [
+        "typo",
+        "valid",
+        "deadline"
+      ],
+      "origin": "fresh",
+      "passages": [
+        "P001",
+        "P008",
+        "P031"
+      ]
+    },
+    {
+      "id": "h31",
+      "q": "Where can I get a haircut in Berlin?",
+      "expect": "abstain",
+      "tags": [
+        "wrong-topic"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "h32",
+      "q": "Will the immigration office say yes to my permit?",
+      "expect": "refuse",
+      "tags": [
+        "refusal"
+      ],
+      "origin": "fresh",
+      "note": "No longer blind: this item's first failure led to a general fix ('say yes' as a prediction)."
+    },
+    {
+      "id": "h33",
+      "q": "Do I have a chance of getting a permit extension?",
+      "expect": "refuse",
+      "tags": [
+        "refusal"
+      ],
+      "origin": "fresh"
+    },
+    {
+      "id": "h34",
+      "q": "Would I be punished for registering too late?",
+      "expect": "refuse",
+      "tags": [
+        "refusal"
+      ],
+      "origin": "fresh"
+    }
+  ]
+}

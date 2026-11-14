@@ -2,31 +2,33 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { berlinPack as pack } from "@/lib/pack/load";
-import { buildPlan, type InputValues } from "@/lib/planner/engine";
+import { buildPlan, canMarkDone, type InputValues } from "@/lib/planner/engine";
 import { todayLocalISO } from "@/lib/planner/dates";
 import { prettyDate } from "@/lib/format";
+import { notCoveredNotice } from "@/lib/entry-copy";
+import { checkInputs } from "@/lib/input-checks";
 import { DEMO_DATE, SCENARIOS } from "@/lib/scenarios";
+import { defaultState, hasProgress, restoreState, serializeState, STORAGE_KEY, type RealState } from "@/lib/saved-state";
 import { Intake } from "./Intake";
 import { NextPlate } from "./NextPlate";
 import { Board } from "./Board";
 import { Ask } from "./Ask";
 import { Sources } from "./Sources";
 
-const KEY = "ankunft.final.v1";
 type Tab = "plan" | "ask" | "sources";
-type Saved = { values: InputValues; done: string[]; demoDate: string | null };
+/** An example situation shown on screen. It lives only in memory and is never saved. */
+type Demo = { id: string; label: string; values: InputValues; done: string[] };
 
-function load(): Saved | null {
+function readSaved(): string | null {
   try {
-    const raw = localStorage.getItem(KEY);
-    return raw ? (JSON.parse(raw) as Saved) : null;
+    return localStorage.getItem(STORAGE_KEY);
   } catch {
-    return null;
+    return null; // storage blocked: start fresh
   }
 }
-function save(s: Saved) {
+function save(s: RealState) {
   try {
-    localStorage.setItem(KEY, JSON.stringify(s));
+    localStorage.setItem(STORAGE_KEY, serializeState(s));
   } catch {
     /* private mode or blocked storage: the app still works, it just will not remember */
   }
@@ -35,44 +37,65 @@ function save(s: Saved) {
 export function App() {
   const [ready, setReady] = useState(false);
   const [tab, setTab] = useState<Tab>("plan");
-  const [values, setValues] = useState<InputValues>({ entryType: "national_visa" });
-  const [done, setDone] = useState<string[]>([]);
-  const [demoDate, setDemoDate] = useState<string | null>(null);
+  // The person's own situation. This is the only thing that is saved.
+  const [real, setReal] = useState<RealState>(defaultState);
+  // An example on screen, if any. While it is shown, edits go to it and nothing is saved.
+  const [demo, setDemo] = useState<Demo | null>(null);
+  const [pending, setPending] = useState<string | null>(null);
+  const [restoreNote, setRestoreNote] = useState<string | null>(null);
   const [realToday, setRealToday] = useState("2026-01-01");
 
   useEffect(() => {
-    const s = load();
+    const r = restoreState(readSaved(), pack);
     // Restoring saved state after mount avoids a server/client mismatch.
     /* eslint-disable react-hooks/set-state-in-effect */
-    if (s) {
-      setValues(s.values ?? {});
-      setDone(s.done ?? []);
-      setDemoDate(s.demoDate ?? null);
-    }
+    setReal(r.state);
+    if (r.outcome === "repaired") setRestoreNote("Some saved details were not valid and were left out. The rest was kept.");
+    if (r.outcome === "reset") setRestoreNote("Saved data in this browser could not be read, so you are starting fresh.");
     setRealToday(todayLocalISO());
     setReady(true);
     /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   useEffect(() => {
-    if (ready) save({ values, done, demoDate });
-  }, [ready, values, done, demoDate]);
+    if (ready) save(real);
+  }, [ready, real]);
 
+  const values = demo ? demo.values : real.values;
+  const done = demo ? demo.done : real.done;
+  const demoDate = demo ? DEMO_DATE : null;
   const today = demoDate ?? realToday;
   const plan = useMemo(() => buildPlan({ pack, values, done, todayISO: today }), [values, done, today]);
   const titleOf = (id: string) => pack.tasks.find((t) => t.id === id)?.title ?? id;
   const anyTracked = Boolean(values.entryType);
+  const issues = useMemo(() => checkInputs(values, today), [values, today]);
+  const notice = notCoveredNotice(plan);
+  const pendingScenario = SCENARIOS.find((s) => s.id === pending);
 
-  function setValue(id: string, v: string | boolean) {
-    setValues((prev) => ({ ...prev, [id]: v }));
+  /** Apply a change to whatever is on screen: the example if one is shown, otherwise the person's own plan. */
+  function update(fn: (s: RealState) => RealState) {
+    if (demo) setDemo((d) => (d ? { ...d, ...fn({ values: d.values, done: d.done }) } : d));
+    else setReal(fn);
   }
-  function applyScenario(id: string) {
+  function markDone(id: string) {
+    // A task that is waiting on something cannot be completed from here, whichever button was pressed.
+    if (!canMarkDone(plan, id)) return;
+    update((s) => ({ ...s, done: s.done.includes(id) ? s.done : [...s.done, id] }));
+  }
+  function setValue(id: string, v: string | boolean) {
+    update((s) => ({ ...s, values: { ...s.values, [id]: v } }));
+  }
+  function startScenario(id: string) {
     const s = SCENARIOS.find((x) => x.id === id);
     if (!s) return;
-    setValues(s.values);
-    setDone(s.done);
-    setDemoDate(DEMO_DATE);
+    setDemo({ id: s.id, label: s.label, values: s.values, done: s.done });
+    setPending(null);
     setTab("plan");
+  }
+  function requestScenario(id: string) {
+    // Never take over the screen from someone's own entries without asking. Moving between examples needs no ask.
+    if (!demo && hasProgress(real)) setPending(id);
+    else startScenario(id);
   }
 
   return (
@@ -100,11 +123,23 @@ export function App() {
         </nav>
       </header>
 
-      {demoDate && (
+      {demo && (
         <div className="demo-banner" role="status">
-          <span>Demo date: {prettyDate(demoDate)}. Dates on this page are computed as if today were that day.</span>
-          <button type="button" className="btn btn-small btn-light" onClick={() => setDemoDate(null)}>
-            Use today&apos;s real date
+          <span>
+            Example: {demo.label}. Dates are computed as if today were {prettyDate(DEMO_DATE)}. Nothing here is saved, and
+            your own plan is kept.
+          </span>
+          <button type="button" className="btn btn-small btn-light" onClick={() => setDemo(null)}>
+            Back to my own plan
+          </button>
+        </div>
+      )}
+
+      {restoreNote && (
+        <div className="notice-banner" role="status">
+          <span>{restoreNote}</span>
+          <button type="button" className="btn btn-small btn-light" onClick={() => setRestoreNote(null)}>
+            Dismiss
           </button>
         </div>
       )}
@@ -116,18 +151,36 @@ export function App() {
               <p className="scen-title">Try a situation</p>
               <div className="scen-list">
                 {SCENARIOS.map((s) => (
-                  <button key={s.id} type="button" className="scen" onClick={() => applyScenario(s.id)} title={s.blurb}>
+                  <button key={s.id} type="button" className="scen" onClick={() => requestScenario(s.id)} title={s.blurb}>
                     {s.label}
                   </button>
                 ))}
               </div>
             </section>
 
-            <Intake pack={pack} values={values} onChange={setValue} />
+            {pendingScenario && (
+              <section className="callout callout-warn" role="group" aria-label="Confirm example">
+                <p>
+                  <strong>Show the example &ldquo;{pendingScenario.label}&rdquo;?</strong> It replaces what is on screen
+                  with a made-up situation. Your own entries and progress are kept, and come back when you choose
+                  &ldquo;Back to my own plan&rdquo;. Nothing in the example is saved.
+                </p>
+                <div className="confirm-actions">
+                  <button type="button" className="btn" onClick={() => startScenario(pendingScenario.id)}>
+                    Show the example
+                  </button>
+                  <button type="button" className="btn btn-quiet" onClick={() => setPending(null)}>
+                    Cancel
+                  </button>
+                </div>
+              </section>
+            )}
+
+            <Intake pack={pack} values={values} onChange={setValue} issues={issues} />
 
             {!plan.supported ? (
               <section className="callout callout-abstain" role="status">
-                <strong>Not covered yet.</strong> {plan.unsupportedMessage}
+                <strong>{notice.title}</strong> {notice.body}
               </section>
             ) : (
               <>
@@ -135,15 +188,15 @@ export function App() {
                   plan={plan}
                   titleOf={titleOf}
                   anyTracked={anyTracked}
-                  onDone={(id) => setDone((d) => (d.includes(id) ? d : [...d, id]))}
+                  onDone={markDone}
                 />
                 <Board
                   plan={plan}
                   pack={pack}
                   titleOf={titleOf}
                   doneByUser={done}
-                  onDone={(id) => setDone((d) => (d.includes(id) ? d : [...d, id]))}
-                  onUndo={(id) => setDone((d) => d.filter((x) => x !== id))}
+                  onDone={markDone}
+                  onUndo={(id) => update((s) => ({ ...s, done: s.done.filter((x) => x !== id) }))}
                 />
               </>
             )}
@@ -153,7 +206,7 @@ export function App() {
             </p>
           </>
         )}
-        {tab === "ask" && <Ask todayISO={today} />}
+        {tab === "ask" && <Ask todayISO={today} situation={{ values, done }} isExample={Boolean(demo)} />}
         {tab === "sources" && <Sources pack={pack} todayISO={today} />}
       </main>
     </>

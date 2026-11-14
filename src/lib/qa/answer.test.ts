@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { berlinCorpus, berlinQA, loadCorpus } from "./load";
 import { berlinPack } from "../pack/load";
-import { classifyRefusal, mentionsOtherCity } from "./answer";
+import { asksAboutLea, asksAboutLocation, asksAboutWork, classifyLocation, classifyRefusal, leaAddressPassages, mentionsOtherCity } from "./answer";
 import { validateCorpus } from "./corpus";
 import { tokenize } from "./text";
 
@@ -65,7 +65,7 @@ describe("answers", () => {
 
 describe("abstain and refuse", () => {
   it("abstains on off-topic questions rather than guessing", () => {
-    for (const q of ["What is the best exchange rate?", "How do I get a driving licence?", "Where should I start?"])
+    for (const q of ["What is the best exchange rate?", "How do I get a driving licence?", "What is the weather like?"])
       expect(ask(q).kind).toBe("abstain");
   });
 
@@ -116,5 +116,139 @@ describe("text", () => {
   it("folds accents and splits German compounds", () => {
     expect(tokenize("Wohnungsgeberbestätigung")).toEqual(expect.arrayContaining(["landlord"]));
     expect(tokenize("Meldebescheinigung and fees")).toContain("fee");
+  });
+});
+
+describe("one distinctive word", () => {
+  it("answers a full question that has one distinctive content word", () => {
+    expect(ids("How much money do I need to show?")).toEqual(expect.arrayContaining(["P050"]));
+    expect(ids("how much money do I need")).toEqual(expect.arrayContaining(["P050"]));
+  });
+
+  it("still abstains on a bare keyword or a short question", () => {
+    for (const q of ["fee", "visa", "register", "What is the fee?", "Do I need it?", "Can I do this?"]) {
+      const r = ask(q);
+      expect(r.kind).toBe("abstain");
+      if (r.kind === "abstain") expect(r.reason).toMatch(/too short/);
+    }
+  });
+});
+
+describe("topics the sources do not cover", () => {
+  const abstainsWith = (q: string, re: RegExp) => {
+    const r = ask(q);
+    expect(r.kind).toBe("abstain");
+    if (r.kind === "abstain") expect(r.reason).toMatch(re);
+    expect(r).not.toHaveProperty("passages");
+  };
+
+  it("abstains on the part-time work question instead of citing unrelated passages", () => {
+    for (const q of [
+      "Can I work part time on a student visa?",
+      "Can I do a part-time job?",
+      "How many hours can I work?",
+      "Can I have a job while I study?",
+      "Can I take a Werkstudent job?",
+    ]) {
+      abstainsWith(q, /Rules on whether and how much a student may work/);
+    }
+    // Judgement questions are still refused before the topic guard is reached.
+    expect(ask("Am I permitted to work while studying?").kind).toBe("refuse");
+  });
+
+  const NO_ADDRESS = /address, opening hours or directions/;
+
+  it("abstains on a Bürgeramt address, opening hours and directions: none of them is in the sources", () => {
+    abstainsWith("Where is the Bürgeramt?", NO_ADDRESS);
+    for (const q of [
+      "Where's the nearest Bürgeramt?",
+      "What are the opening hours of the Bürgeramt?",
+      "What is the address of the registration office?",
+      "Where is the registration office?",
+      "How do I get to the Bürgeramt?",
+    ]) {
+      abstainsWith(q, NO_ADDRESS);
+    }
+  });
+
+  it("answers where the immigration office is with the address in P020, cited", () => {
+    const addressPassage = berlinCorpus.passages.find((p) => p.id === "P020")!;
+    const street = /Keplerstraße 2, 10589 Berlin/.exec(addressPassage.text)![0];
+    for (const q of [
+      "Where is the immigration office?",
+      "Where is the LEA?",
+      "What is the address of the immigration office?",
+      "Where is the Landesamt für Einwanderung?",
+    ]) {
+      const r = ask(q);
+      expect(r.kind, q).toBe("answer");
+      if (r.kind !== "answer") continue;
+      expect(r.passages.map((p) => p.citation.passageId), q).toEqual(["P020"]);
+      expect(r.passages[0].text).toContain(street);
+      expect(r.passages[0].citation.sourceId).toBe("S4");
+      expect(r.passages[0].citation.url).toMatch(/^https:\/\//);
+      expect(r.notices.some((n) => /paraphrase/i.test(n))).toBe(true);
+    }
+  });
+
+  it("still abstains on hours and directions for the immigration office, which P020 does not give", () => {
+    for (const q of [
+      "What are the opening hours of the immigration office?",
+      "How do I get to the immigration office?",
+      "Directions to the LEA",
+    ]) {
+      abstainsWith(q, NO_ADDRESS);
+    }
+  });
+
+  it("does not hand the LEA address to a question about another office or another city", () => {
+    expect(asksAboutLea("Where is the Bürgeramt?")).toBe(false);
+    expect(asksAboutLea("Where is the registration office of the immigration district?")).toBe(false);
+    expect(asksAboutLea("Where is the immigration office?")).toBe(true);
+    const r = ask("Where is the immigration office in Munich?");
+    expect(r.kind === "abstain" && /only covers Berlin/.test(r.reason)).toBe(true);
+  });
+
+  it("rests on the corpus: the only street address in the saved passages is the immigration office's", () => {
+    const withStreet = berlinCorpus.passages.filter((p) =>
+      /\p{Lu}[\p{L}-]*(?:stra(?:ß|ss)e|str\.|allee|platz|ufer|damm|weg)\s+\d+/u.test(p.text),
+    );
+    expect(withStreet.map((p) => p.id)).toEqual(["P020"]);
+    expect(leaAddressPassages(berlinCorpus).map((p) => p.id)).toEqual(["P020"]);
+  });
+
+  it("classifies location questions", () => {
+    expect(classifyLocation("Where is the immigration office?")).toBe("address");
+    expect(classifyLocation("What are the opening hours of the immigration office?")).toBe("hours_or_directions");
+    expect(classifyLocation("Where can I register my address online?")).toBeNull();
+  });
+
+  it("points to the official pages for locations without inventing one", () => {
+    const r = ask("Where is the Bürgeramt?");
+    expect(r.kind === "abstain" && /service\.berlin\.de/.test(r.reason) && /berlin\.de\/einwanderung/.test(r.reason)).toBe(true);
+  });
+
+  it("does not catch questions the sources do answer", () => {
+    expect(asksAboutLocation("Where can I register my address online?")).toBe(false);
+    expect(asksAboutLocation("Where does my tax ID number come from?")).toBe(false);
+    expect(asksAboutLocation("Do I need Anmeldung to get an LEA appointment?")).toBe(false);
+    expect(asksAboutWork("How does the blocked account work?")).toBe(false);
+    expect(asksAboutWork("How do I work out the deadline?")).toBe(false);
+    expect(asksAboutWork("Can a part-time employment contract be proof of funds?")).toBe(false);
+    expect(ids("Where can I register my address online?")).toContain("P010");
+    expect(ids("Can a part-time employment contract be proof of funds?")).toContain("P016");
+    expect(ids("Can I register at any Bürgeramt?")).toContain("P029");
+  });
+
+  it("keeps the city guard first and the refusal rules working", () => {
+    const r = ask("Where is the Bürgeramt in Munich?");
+    expect(r.kind === "abstain" && /only covers Berlin/.test(r.reason)).toBe(true);
+    expect(ask("Is it legal to work on a student visa?").kind).toBe("refuse");
+    expect(ask("Am I allowed to work in my first three months?").kind).toBe("refuse");
+  });
+
+  it("keeps source conflicts on the questions that still answer", () => {
+    const r = ask("Can I apply for the residence permit before my permit or visa expires?");
+    expect(r.kind === "answer" && r.conflicts.map((c) => c.id)).toContain("C-EARLIEST");
   });
 });

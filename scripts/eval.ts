@@ -1,8 +1,20 @@
 import main from "../src/data/qa-gold.json";
 import second from "../src/data/qa-gold-heldout.json";
-import { formatReport, runEval, type GoldCase } from "../src/lib/qa/eval";
+import unseen from "../eval/qa-unseen.json";
+import holdout from "../eval/qa-holdout.json";
+import batch4 from "../eval/qa-batch4.json";
+import conversational from "../eval/qa-conversational.json";
+import { formatConversational, formatReport, formatUnseen, runConversational, runEval, runUnseen, type ConversationalCase, type GoldCase, type UnseenCase } from "../src/lib/qa/eval";
 
 const TODAY = "2026-11-14";
 console.log(formatReport("Main set", runEval(main.cases as GoldCase[], TODAY)));
 console.log();
 console.log(formatReport("Second set (written before the window; used for tuning earlier, so not independent)", runEval(second.cases as GoldCase[], TODAY)));
+console.log();
+console.log(formatUnseen("Unseen regression set (eval/qa-unseen.json; written by the person who fixed the failures, so a regression set, not a blind test)", runUnseen(unseen.cases as UnseenCase[], TODAY)));
+console.log();
+console.log(formatUnseen("Holdout (eval/qa-holdout.json; written before the fixes; eight items (h06 h08 h12 h15 h19 h20 h23 h32) are no longer blind, see their notes)", runUnseen(holdout.cases as UnseenCase[], TODAY)));
+console.log();
+console.log(formatUnseen("Batch-4 questions (eval/qa-batch4.json; written after diagnosing the mechanisms and before the fixes; not blind)", runUnseen(batch4.cases as UnseenCase[], TODAY)));
+console.log();
+console.log(formatConversational("Conversational questions (eval/qa-conversational.json; written before the free-form pass, after diagnosing it; not blind)", runConversational(conversational.cases as ConversationalCase[], TODAY)));

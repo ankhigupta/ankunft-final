@@ -3,6 +3,7 @@ import { berlinPack } from "../pack/load";
 import { CorpusSchema, validateCorpus, type Corpus } from "./corpus";
 import { Bm25Retriever } from "./retriever";
 import { answerQuestion, type QAResponse } from "./answer";
+import type { Situation } from "./guidance";
 
 export function loadCorpus(input: unknown = raw): Corpus {
   const corpus = CorpusSchema.parse(input);
@@ -14,6 +15,6 @@ export function loadCorpus(input: unknown = raw): Corpus {
 export const berlinCorpus = loadCorpus();
 const retriever = new Bm25Retriever(berlinCorpus.passages);
 
-export function berlinQA(question: string, todayISO: string): QAResponse {
-  return answerQuestion(question, { pack: berlinPack, corpus: berlinCorpus, retriever, todayISO });
+export function berlinQA(question: string, todayISO: string, situation?: Situation): QAResponse {
+  return answerQuestion(question, { pack: berlinPack, corpus: berlinCorpus, retriever, todayISO, situation });
 }

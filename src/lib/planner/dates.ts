@@ -10,6 +10,23 @@ export function isValidISO(s: unknown): s is string {
   return d.getUTCFullYear() === +m[1] && d.getUTCMonth() === +m[2] - 1 && d.getUTCDate() === +m[3];
 }
 
+/** The range of dates the app accepts. Anything outside it is ignored by the planner, never computed with. */
+export const MIN_DATE = "2000-01-01";
+export const MAX_DATE = "2100-12-31";
+
+/** A real calendar date inside the accepted range. Safe to do arithmetic with. */
+export function isPlausibleDate(s: unknown): s is string {
+  return isValidISO(s) && s >= MIN_DATE && s <= MAX_DATE;
+}
+
+/** Why a typed date cannot be used, in words for the person typing it, or null if it can. Empty is fine. */
+export function dateProblem(s: unknown): string | null {
+  if (s === undefined || s === null || s === "") return null;
+  if (typeof s !== "string" || !isValidISO(s)) return "That is not a real date. Use day, month and year.";
+  if (s < MIN_DATE || s > MAX_DATE) return "Enter a date between 1 Jan 2000 and 31 Dec 2100.";
+  return null;
+}
+
 function toDay(s: string): number {
   if (!isValidISO(s)) throw new Error(`Invalid date: ${s}`);
   return Date.parse(s) / 86_400_000;

@@ -1,6 +1,6 @@
 import type { Pack } from "@/lib/pack/schema";
-import type { PlannedTask } from "@/lib/planner/engine";
-import { prettyDate, prettyDates, daysPhrase } from "@/lib/format";
+import { needText, type PlannedTask } from "@/lib/planner/engine";
+import { prettyDate, prettyDates, daysPhrase, deadlinePhrase } from "@/lib/format";
 import { BasisBadge, DEADLINE_LABEL } from "./Badges";
 
 function SourceLinks({ ids, pack }: { ids: string[]; pack: Pack }) {
@@ -27,6 +27,13 @@ export function TaskDetail({ p, pack, titleOf }: { p: PlannedTask; pack: Pack; t
     <div className="detail">
       <p>{prettyDates(t.summary)}</p>
 
+      {p.doneMarkIgnored && (
+        <p className="callout callout-warn">
+          You marked this as done earlier, but something it depends on is not complete now, so it is shown as waiting.
+          If that step is completed again, your mark counts again.
+        </p>
+      )}
+
       <section>
         <h4>Deadline</h4>
         <p className="deadline-kind">{DEADLINE_LABEL[d.kind]}</p>
@@ -34,8 +41,14 @@ export function TaskDetail({ p, pack, titleOf }: { p: PlannedTask; pack: Pack; t
         {p.deadline && (
           <p className="deadline-calc">
             {p.deadline.hard ? "Last day" : "Guidance date"}: <strong>{prettyDate(p.deadline.date)}</strong> (
-            {daysPhrase(p.deadline.daysLeft)})
+            {deadlinePhrase(p.deadline)})
             {!p.deadline.hard && <span className="guidance"> Guidance, not a legal date.</span>}
+          </p>
+        )}
+        {p.dueBy && p.dueBy.taskId !== t.id && (
+          <p className="deadline-calc">
+            Needed first for {titleOf(p.dueBy.taskId)}. Its last day: <strong>{prettyDate(p.dueBy.date)}</strong> (
+            {daysPhrase(p.dueBy.daysLeft)})
           </p>
         )}
         <SourceLinks ids={d.sourceIds} pack={pack} />
@@ -56,7 +69,7 @@ export function TaskDetail({ p, pack, titleOf }: { p: PlannedTask; pack: Pack; t
                   </div>
                   {blocker && (
                     <p className="missing">
-                      Still missing: {blocker.missing.map((m) => (m.kind === "task" ? titleOf(m.id) : m.label)).join("; ")}
+                      Still missing: {needText(blocker.need)}
                     </p>
                   )}
                   {r.note && <p className="note">{r.note}</p>}
