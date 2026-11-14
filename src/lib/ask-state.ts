@@ -21,6 +21,8 @@ export const initialAskState: AskState = { text: "", phase: "idle", asked: null,
 
 export type AskAction =
   | { type: "edit"; text: string }
+  /** A suggested question was picked. It only fills the box: it never sends anything. */
+  | { type: "suggest"; text: string }
   /** `requestId` comes from a counter that only goes up, so every request has an id no earlier one had. */
   | { type: "submit"; text: string; requestId: number }
   | { type: "success"; requestId: number; result: QAResponse }
@@ -43,6 +45,9 @@ export function askReducer(state: AskState, action: AskAction): AskState {
       }
       return next;
     }
+    case "suggest":
+      // Whatever was shown belongs to the old question. Nothing is sent until the person presses Ask.
+      return { ...state, text: action.text, phase: "idle", asked: null, result: null, error: null };
     case "submit": {
       const t = action.text.trim();
       if (!shouldSend(state, t)) return state;

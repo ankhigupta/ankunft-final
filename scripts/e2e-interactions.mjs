@@ -149,11 +149,28 @@ async function runOrigin(url) {
       check(`"${tab}" tab opens its section`, r.found && (await activeTab()) === tab && (await ev(`!!document.querySelector(${JSON.stringify(marker)})`)));
     }
 
-    // 6. Ask chips send a question and show a result.
+    // 6. Ask chips only fill the box. Nothing is sent until the person presses Ask.
     await click(byText("button.tab", "Ask"));
+    // Counts the requests the page sends to /api/ask. Idempotent, and lost on reload, so call it again after one.
+    const countRequests = () => ev(`(() => { if (!window.__sent) { window.__sent = 0; const real = window.fetch.bind(window); window.fetch = (u, i) => { if (String(u).includes("/api/ask")) window.__sent++; return real(u, i); }; } return window.__sent; })()`);
+    const sent = () => ev(`window.__sent`);
+    const boxValue = () => ev(`document.querySelector("#q").value`);
+    await countRequests();
+    const chipText = await ev(`document.querySelector(".chip")?.textContent ?? ""`);
     const chip = await click(`document.querySelector(".chip")`);
+    await sleep(800);
+    check("an example chip fills the box and sends nothing", chip.found && (await boxValue()) === chipText && (await sent()) === 0, `box="${await boxValue()}" sent=${await sent()}`);
+    check("an example chip shows no result and no loading state", !(await ev(`!!document.querySelector(".ask-result .answer, .ask-result .callout")`)));
+    check("the box has focus, ready to edit or send", await ev(`document.activeElement?.id === "q"`));
+    check("the Ask button is enabled for the filled question", await ev(`!document.querySelector(".ask-form .btn").disabled`));
+    await click(`document.querySelector(".ask-form .btn")`);
     await sleep(1200);
-    check("an example-question chip returns a result", chip.found && (await ev(`!!document.querySelector(".ask-result .answer, .ask-result .callout")`)));
+    check("pressing Ask afterwards sends it, once, and shows the result", (await sent()) === 1 && (await ev(`!!document.querySelector(".ask-result .answer, .ask-result .callout")`)), `sent=${await sent()}`);
+    await ev(`(() => { const i = document.querySelector("#q"); Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value").set.call(i, i.value + " in Berlin"); i.dispatchEvent(new Event("input", { bubbles: true })); })()`);
+    check("a filled question can be edited, and editing hides the old answer", (await boxValue()).endsWith(" in Berlin") && !(await ev(`!!document.querySelector(".ask-result .answer")`)) && (await sent()) === 1);
+    const chip2 = await click(`document.querySelectorAll(".chip")[1]`);
+    await sleep(500);
+    check("picking another chip replaces the text and still sends nothing", chip2.found && !(await boxValue()).endsWith(" in Berlin") && (await sent()) === 1, `sent=${await sent()}`);
 
     // 7. The situation form changes the plan.
     await click(byText("button.tab", "Plan"));
@@ -173,6 +190,7 @@ async function runOrigin(url) {
     const saved = async () => JSON.parse((await ev(`localStorage.getItem(${JSON.stringify(KEY)}) ?? "null"`)) ?? "null");
     const val = (id) => ev(`document.querySelector("#${id}")?.value ?? null`);
     const has = (sel) => ev(`!!document.querySelector(${JSON.stringify(sel)})`);
+    const resultTextNow = () => ev(`document.querySelector(".ask-result")?.innerText ?? ""`);
 
     await ev(`localStorage.clear()`);
     await reload();
@@ -361,9 +379,15 @@ async function runOrigin(url) {
     a = await askPage("visa");
     const chips = await ev(`document.querySelectorAll(".ask-result .clarify .chip").length`);
     check("a one-word question asks what was meant and offers questions", a.kind === "abstain" && /I need a little more/.test(a.text) && chips >= 2, `${chips} options`);
+    await countRequests();
+    const sentBefore = await sent();
+    const optionText = await ev(`document.querySelector(".ask-result .clarify .chip").textContent`);
     await click(`document.querySelector(".ask-result .clarify .chip")`);
-    await sleep(900);
-    check("choosing an offered question gives a cited answer", (await ev(`document.querySelectorAll(".ask-result .answer").length`)) > 0 && !(await has(".ask-result .clarify")));
+    await sleep(700);
+    check("choosing an offered question only fills the box: nothing is sent and the old reply is gone", (await boxValue()) === optionText && (await sent()) === sentBefore && !(await has(".ask-result .clarify")) && (await resultTextNow()).trim() === "", `box="${await boxValue()}"`);
+    await click(`document.querySelector(".ask-form .btn")`);
+    await sleep(1000);
+    check("pressing Ask then gives a cited answer", (await sent()) === sentBefore + 1 && (await ev(`document.querySelectorAll(".ask-result .answer").length`)) > 0);
 
     // ---- Free-form questions with the person's own entries ----
     await ev(`localStorage.setItem("ankunft.final.v1", JSON.stringify({ values: { entryType: "national_visa", arrivalDate: "2026-11-10", moveInDate: "2026-11-12" }, done: [] }))`);
@@ -437,12 +461,22 @@ async function runOrigin(url) {
     // Race: slow question first, fast question second. The slow reply arrives last and must be dropped.
     await ev(`window.__delays = { ${JSON.stringify(FIRST)}: 1800 }; window.__calls.length = 0`);
     await typeQ(FIRST); await submitForm(); await sleep(150);
-    await click(byText(".chips .chip", "What does the landlord's"));
+    await typeQ(SECOND); await submitForm(); // typing replaces the question in flight; the slow reply is still delivered later
     await sleep(500);
     check("race: the newer question's answer is shown first", (await shownQuestion()).includes("landlord"), await shownQuestion());
     await sleep(2000);
     check("race: the older, slower reply arriving last does not overwrite it", (await shownQuestion()).includes("landlord") && !/How many days/.test(await shownQuestion()), await shownQuestion());
     check("race: both requests really were sent (the test is meaningful)", (await ev(`window.__calls.length`)) === 2);
+
+    // Picking a suggestion while a request is in flight abandons it, and sends nothing itself.
+    await ev(`window.__delays = { ${JSON.stringify(FIRST)}: 1500 }; window.__calls.length = 0`);
+    await typeQ(FIRST); await submitForm(); await sleep(200);
+    const picked = await ev(`document.querySelectorAll(".chips .chip")[1].textContent`);
+    await click(`document.querySelectorAll(".chips .chip")[1]`);
+    await sleep(100);
+    check("chip while loading: the loading status goes away, the box holds the suggestion, nothing new is sent", !/Searching the saved sources/.test(await resultText()) && (await ev(`window.__calls.length`)) === 1 && (await ev(`document.querySelector("#q").value`)) === picked && picked !== FIRST, picked);
+    await sleep(1800);
+    check("chip while loading: the abandoned request's answer never appears", (await ev(`document.querySelectorAll(".ask-result .answer").length`)) === 0 && (await resultText()).trim() === "");
 
     // Editing while a request is in flight abandons it.
     await ev(`window.__delays = { ${JSON.stringify(FIRST)}: 1500 }`);

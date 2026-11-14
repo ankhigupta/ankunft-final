@@ -23,6 +23,7 @@ export function Ask({ todayISO, situation, isExample }: Props) {
   const [state, dispatch] = useReducer(askReducer, initialAskState);
   const controller = useRef<AbortController | null>(null);
   const counter = useRef(0);
+  const input = useRef<HTMLInputElement | null>(null);
 
   // Leaving the tab abandons a request still in flight.
   useEffect(() => () => controller.current?.abort(), []);
@@ -64,6 +65,13 @@ export function Ask({ todayISO, situation, isExample }: Props) {
   const { text, phase, asked, result: res, error } = state;
   const loading = phase === "loading";
 
+  /** A suggested question only fills the box, ready to edit. The person sends it with Ask. */
+  function suggest(question: string) {
+    controller.current?.abort(); // a request still in flight belongs to the old question
+    dispatch({ type: "suggest", text: question });
+    input.current?.focus();
+  }
+
   return (
     <div className="ask">
       <h2 className="section-title">Ask about the rules</h2>
@@ -83,6 +91,7 @@ export function Ask({ todayISO, situation, isExample }: Props) {
         </label>
         <input
           id="q"
+          ref={input}
           value={text}
           maxLength={500}
           placeholder="For example: how many days do I have to register?"
@@ -98,7 +107,7 @@ export function Ask({ todayISO, situation, isExample }: Props) {
       </form>
       <div className="chips" role="list" aria-label="Example questions">
         {EXAMPLE_QUESTIONS.map(({ q: ex }) => (
-          <button key={ex} type="button" className="chip" role="listitem" onClick={() => submit(ex)}>
+          <button key={ex} type="button" className="chip" role="listitem" onClick={() => suggest(ex)}>
             {ex}
           </button>
         ))}
@@ -167,7 +176,7 @@ export function Ask({ todayISO, situation, isExample }: Props) {
                 <p>{res.clarify.prompt}</p>
                 <div className="chips" role="list" aria-label="Questions you could ask">
                   {res.clarify.options.map((o) => (
-                    <button key={o} type="button" className="chip" role="listitem" onClick={() => submit(o)}>
+                    <button key={o} type="button" className="chip" role="listitem" onClick={() => suggest(o)}>
                       {o}
                     </button>
                   ))}

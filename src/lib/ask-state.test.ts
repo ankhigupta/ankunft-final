@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { readFileSync } from "node:fs";
 import { askReducer, describeFailure, initialAskState, shouldSend, type AskAction, type AskState } from "./ask-state";
 import type { QAResponse } from "./qa/answer";
 
@@ -145,5 +146,93 @@ describe("Ask state: errors are friendly", () => {
   it("tells a lost connection from a problem on our side", () => {
     expect(describeFailure({ network: true })).toMatch(/connection/);
     expect(describeFailure({ status: 500 })).toMatch(/our side/);
+  });
+});
+
+describe("Ask state: suggested questions only fill the box", () => {
+  const answered = run([
+    { type: "submit", text: "first question", requestId: 1 },
+    { type: "success", requestId: 1, result: answer("first question") },
+  ]);
+
+  it("picking a suggestion sets the text and starts nothing", () => {
+    const s = askReducer(answered, { type: "suggest", text: "a suggested question" });
+    expect(s.text).toBe("a suggested question");
+    expect(s.phase).toBe("idle");
+    expect(s.asked).toBeNull();
+    expect(s.requestId).toBe(answered.requestId); // no request was started
+  });
+
+  it("hides the previous answer or error at once", () => {
+    expect(askReducer(answered, { type: "suggest", text: "next" }).result).toBeNull();
+    const failed = run([
+      { type: "submit", text: "q", requestId: 1 },
+      { type: "failure", requestId: 1, message: "boom" },
+    ]);
+    expect(askReducer(failed, { type: "suggest", text: "next" }).error).toBeNull();
+  });
+
+  it("even when it is the question already answered, it only fills the box", () => {
+    const s = askReducer(answered, { type: "suggest", text: "first question" });
+    expect(s.phase).toBe("idle");
+    expect(s.text).toBe("first question");
+  });
+
+  it("abandons a request in flight, whose reply is then dropped", () => {
+    const s = run([
+      { type: "submit", text: "slow", requestId: 1 },
+      { type: "suggest", text: "suggested" },
+      { type: "success", requestId: 1, result: answer("slow") },
+    ]);
+    expect(s.phase).toBe("idle");
+    expect(s.result).toBeNull();
+    expect(s.text).toBe("suggested");
+  });
+
+  it("the filled question can be edited, and is only sent by an explicit submit", () => {
+    let s = askReducer(initialAskState, { type: "suggest", text: "How many days do I have to register?" });
+    s = askReducer(s, { type: "edit", text: "How many days do I have to register my address?" });
+    expect(s.phase).toBe("idle");
+    expect(shouldSend(s, s.text)).toBe(true);
+    s = askReducer(s, { type: "submit", text: s.text, requestId: 1 });
+    expect(s.phase).toBe("loading");
+    expect(s.requestId).toBe(1);
+    expect(s.asked).toBe("How many days do I have to register my address?");
+  });
+
+  it("a submit after a suggestion works like any other: loading, then the answer, races still dropped", () => {
+    let s = askReducer(answered, { type: "suggest", text: "second" });
+    s = askReducer(s, { type: "submit", text: "second", requestId: 2 });
+    s = askReducer(s, { type: "success", requestId: 1, result: answer("first question") }); // stale
+    expect(s.phase).toBe("loading");
+    s = askReducer(s, { type: "success", requestId: 2, result: answer("second") });
+    expect(s.result?.question).toBe("second");
+  });
+});
+
+describe("Ask component: no suggestion chip sends a request", () => {
+  // The component has no DOM test here, so this guards the wiring, and the browser checks
+  // (scripts/e2e-interactions.mjs) count the requests a real click sends. Only the form and "Try again" may submit.
+  const source = readFileSync(new URL("../components/Ask.tsx", import.meta.url), "utf8");
+
+  it("every chip handler fills the box", () => {
+    const chips = source.match(/className="chip"[^>]*onClick=\{[^}]*\}/g) ?? [];
+    expect(chips.length).toBe(2); // the example chips and the clarification options
+    for (const c of chips) {
+      expect(c).toMatch(/onClick=\{\(\) => suggest\(/);
+      expect(c).not.toMatch(/submit\(/);
+    }
+  });
+
+  it("submit is reachable only from the form and 'Try again'", () => {
+    const callers = [...source.matchAll(/\bsubmit\(([^)]*)\)/g)].map((m) => m[1]).filter((arg) => !arg.includes(":")); // not the declaration `submit(question: string)`
+    expect(callers.sort()).toEqual(["asked", "text"]);
+  });
+
+  it("the suggest handler abandons a request in flight and does not call the API", () => {
+    const body = /function suggest\([^)]*\) \{([\s\S]*?)\n  \}/.exec(source)![1];
+    expect(body).toContain("controller.current?.abort()");
+    expect(body).toContain('dispatch({ type: "suggest"');
+    expect(body).not.toMatch(/fetch|submit\(/);
   });
 });
