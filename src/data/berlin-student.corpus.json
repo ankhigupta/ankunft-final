@@ -97,7 +97,8 @@
       "locator": "Unterlagen (documents)",
       "questions": [
         "What documents do I need for Anmeldung?",
-        "Does a lease replace the landlord's confirmation?"
+        "Does a lease replace the landlord's confirmation?",
+        "Is a lease or rental contract enough to register my address?"
       ],
       "textKind": "paraphrase",
       "text": "For Anmeldung you need proof of identity and the landlord's move-in confirmation (Wohnungsgeberbestätigung). A lease does not replace the landlord's confirmation. On site you need a valid passport or ID card, plus other documents depending on your nationality. A first registration in Berlin may also need birth or marriage certificates, and a supplementary form if you keep another apartment in Germany."

@@ -81,6 +81,13 @@ export function mentionsOtherCity(question: string): boolean {
   return OTHER_PLACES.test(q) && !/\bberlin\b/.test(q);
 }
 
+/** Work rules for students are not in the pack, and the generic words in such questions match visa passages. */
+const WORK_HOURS = /\b(hours?\b.*\b(work|working|job)|(work|working|job)\b.*\bhours?)\b/;
+
+export function asksAboutWorkHours(question: string): boolean {
+  return WORK_HOURS.test(fold(question));
+}
+
 export function classifyRefusal(question: string): RefusalCategory | null {
   const q = fold(question);
   for (const r of REFUSAL_RULES) if (r.pattern.test(q)) return r.category;
@@ -137,6 +144,16 @@ export function answerQuestion(question: string, ctx: AnswerContext): QAResponse
       reason:
         "Ankunft only covers Berlin so far, and rules differ between cities and registration offices. " +
         "Ask the local registration office or your university's international office.",
+    };
+  }
+
+  if (asksAboutWorkHours(q)) {
+    return {
+      kind: "abstain",
+      question: q,
+      reason:
+        "Rules on how much a student may work are not covered by the sources I have saved, so I will not guess. " +
+        "Ask your university's international office or the immigration office (LEA).",
     };
   }
 

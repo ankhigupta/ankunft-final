@@ -19,7 +19,7 @@ const STOPWORDS = new Set(
     "can could should would will may might must shall if then than so as not no any some " +
     "about into over under up out off per also just only very much many more most other such " +
     "get got need needs want tell show best way find know check alone thing things fur " +
-    "please s"
+    "please s has have had gave give given make made take took until they them their information"
   ).split(/\s+/),
 );
 
@@ -47,25 +47,25 @@ const GROUPS: string[][] = [
   ["apply", "application", "submit", "request"],
   ["dwelling", "flat", "apartment", "home", "housing", "accommodation"],
   ["lease", "rental", "tenancy", "rent"],
-  ["deregister", "abmeldung", "withdraw", "cancel"],
-  ["proof", "evidence", "document", "certificate", "confirmation"],
+  ["deregister", "abmeldung", "cancel", "unregister"],
+  ["withdraw", "withdrawal", "withdrawing", "limit", "maximum", "cap"],
+  ["leave", "leaving", "depart", "move"],
+  ["proof", "evidence", "document", "certificate", "confirmation", "prove", "proving"],
   ["enough", "sufficient", "adequate"],
   ["valid", "accept", "accepted", "recognised", "recognized"],
   ["expire", "end", "ends", "run", "runs", "expiry", "expires", "lapse"],
   ["mail", "post", "deliver", "delivery", "letter"],
   ["start", "begin", "commence"],
   ["earliest", "soonest", "early", "advance"],
-  ["deadline", "days", "weeks", "time", "long", "late"],
+  ["deadline", "days", "weeks", "time", "long", "late", "period"],
   ["arrive", "arrival", "land", "enter", "entry"],
   ["india", "indian", "foreign", "abroad", "overseas"],
   ["ignore", "respond", "reply", "answer"],
-  ["parent", "parents", "family"],
+  ["parent", "parents", "family", "parental"],
+  ["card", "plastic", "eat", "electronic"],
   ["insurance", "insured", "insurer"],
   ["funds", "money", "financing", "livelihood", "finances"],
 ];
-
-const canonical = new Map<string, string>();
-for (const g of GROUPS) for (const w of g) canonical.set(w, g[0]);
 
 export function stem(w: string): string {
   if (w.length <= 3) return w;
@@ -78,6 +78,9 @@ export function stem(w: string): string {
   if (w.length > 4 && w.endsWith("e")) w = w.slice(0, -1);
   return w;
 }
+
+const canonical = new Map<string, string>();
+for (const g of GROUPS) for (const w of g) { canonical.set(w, g[0]); canonical.set(stem(w), g[0]); }
 
 export function tokenize(text: string): string[] {
   const cleaned = fold(text)

@@ -62,6 +62,9 @@ export class Bm25Retriever implements Retriever {
     const top = scored.filter((s) => s.score > 0).slice(0, limit);
     // Coverage is judged on the best few single passages: a question must be answered by one passage.
     const coverage = Math.max(0, ...scored.slice(0, 3).map((s) => s.covered)) / totalWeight;
-    return { hits: top.map(({ passageId, score }) => ({ passageId, score })), coverage, termCount: terms.length };
+    return {
+      hits: top.map(({ passageId, score }) => ({ passageId, score })),
+      coverage, termCount: terms.length
+    };
   }
 }
